@@ -1,8 +1,13 @@
 #!/bin/sh
 
-apt-get remove -y --purge ufw juju puppet
+apt-get remove -y --purge ufw juju puppet chef ruby bundler
 apt-get update -y && apt-get upgrade -y && apt-get dist-upgrade -y
 
+apt-get install -y build-essential zlib1g-dev software-properties-common git
+apt-add-repository -y ppa:brightbox/ruby-ng
+apt-get update -y
+apt-get install -y ruby2.2 ruby2.2-dev
+echo 'gem: --no-rdoc --no-ri' > /etc/gemrc
 curl -L https://www.chef.io/chef/install.sh | sudo bash -s -- -v 12.1.0;
 
 umount /vagrant
