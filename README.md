@@ -9,6 +9,7 @@ DevOps jumpstart workshop base box
     vagrant push local
 
 ## Add to local boxes
+    rm devops-jumstart.box
     vagrant box add --force --name xpeppers/devops-jumpstart devops-jumpstart.box
 
 ## Push to Atlas
