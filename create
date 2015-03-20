@@ -1,0 +1,10 @@
+#!/bin/sh
+
+set -e
+
+vagrant destroy --force
+vagrant up
+rm -f devops-jumpstart.box
+vagrant push local
+vagrant box add --force --name xpeppers/devops-jumpstart devops-jumpstart.box
+ATLAS_TOKEN=`cat ~/.vagrant.d/data/vagrant_login_token` vagrant push remote
