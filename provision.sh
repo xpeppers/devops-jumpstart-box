@@ -2,6 +2,8 @@
 
 set -e
 
+echo "ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEA6NF8iallvQVp22WDkTkyrtvp9eWW6A8YVr+kz4TjGYe7gHzIw+niNltGEFHzD8+v1I2YJ6oXevct1YeS0o9HZyN1Q9qgCgzUFtdOKLv6IedplqoPkcmF0aYet2PkEDo3MlTBckFXPITAMzF8dJSIFo9D8HfdOV0IAdx4O7PtixWKn5y2hMNG0zQPyUecp4pzC6kivAIhyfHilFR61RGL+GPXQ2MWZWFYbAGjyiYJnAmCP3NOTd0jMZEnDkbUvxhMmBYSdETk1rRgm+R4LOzFUGaHqHDLKLX+FIPKcF96hrucXzcWyLbIbEgE98OHlnVYCzRdK8jlqm8tehUc9c9WhQ== vagrant insecure public key" > /home/vagrant/.ssh/authorized_keys
+
 DEBIAN_FRONTEND=noninteractive apt-get remove -y -f --purge ufw juju puppet chef ruby bundler xserver-xorg-core xserver-common x11-common xfonts-base apport default-jre || :
 apt-get update -y && apt-get upgrade -y && apt-get dist-upgrade -y
 
@@ -14,13 +16,16 @@ apt-get install -y --force-yes build-essential zlib1g-dev autoconf binutils-doc 
 apt-get install -y --force-yes git nginx ruby2.2 ruby2.2-dev mysql-client-5.6 libmysqlclient-dev phantomjs openjdk-7-jre jenkins
 DEBIAN_FRONTEND=noninteractive apt-get install -y --force-yes mysql-server-5.6 || :
 
-echo 'gem: --no-rdoc --no-ri' > /etc/gemrc
-gem install bundler thor:0.19.0 busser:0.7.0 busser-serverspec:0.5.3 net-ssh:2.9.2 net-scp:1.2.1 specinfra:2.20.1 multi_json:1.11.0 diff-lcs:1.2.5 rspec-support:3.2.2 rspec-expectations:3.2.0 rspec-core:3.2.2 rspec-its:1.2.0 rspec-mocks:3.2.1 rspec:3.2.0 serverspec:2.10.1
-gem_install="gem install --user-install rake:10.4.2 i18n:0.7.0 json:1.8.2 minitest:5.5.1 thread_safe:0.3.5 tzinfo:1.2.2 activesupport:4.2.0 builder:3.2.2 activemodel:4.2.0 arel:6.0.0 activerecord:4.2.0 colorize:0.7.5 net-ssh:2.9.2 net-scp:1.2.1 sshkit:1.7.1 capistrano:3.4.0 capistrano-bundler:1.1.4 capistrano-scm-copy:0.5.0 mime-types:2.4.3 mini_portile:0.6.2 nokogiri:1.6.6.2 rack:1.6.0 rack-test:0.6.3 xpath:2.0.0 capybara:2.4.4 cliver:0.3.2 diff-lcs:1.2.5 multi_json:1.11.0 gherkin:2.12.2 multi_test:0.1.2 cucumber:1.3.19 kgio:2.9.3 mysql2:0.3.18 websocket-extensions:0.1.2 websocket-driver:0.5.3 poltergeist:1.6.0 rack-flash3:1.0.5 rack-protection:1.5.3 raindrops:0.13.0 rspec-support:3.2.2 rspec-core:3.2.2 rspec-expectations:3.2.0 rspec-mocks:3.2.1 rspec:3.2.0 tilt:2.0.1 sinatra-activerecord:2.0.5 unicorn:4.8.3 bundler:1.8.5"
-su vagrant -c "$gem_install"
-su jenkins -c "$gem_install"
+curl -L https://www.chef.io/chef/install.sh | sudo bash -s -- -v 12.5.1;
 
-curl -L https://www.chef.io/chef/install.sh | sudo bash -s -- -v 12.1.0;
+echo 'gem: --no-rdoc --no-ri' > /etc/gemrc
+global_gems="bundler capistrano capistrano-scm-copy capistrano-bundler"
+chef_gems="thor:0.19.0 busser:0.7.1 sfl:2.2 busser-serverspec:0.5.3 net-ssh:2.9.2 net-telnet:0.1.1 net-scp:1.2.1 specinfra:2.44.1 multi_json:1.11.2 diff-lcs:1.2.5 rspec-support:3.3.0 rspec-expectations:3.3.1 rspec-core:3.3.2 rspec-its:1.2.0 rspec-mocks:3.3.2 rspec:3.3.0 serverspec:2.24.2"
+user_gems="rake:10.4.2 i18n:0.7.0 json:1.8.3 minitest:5.8.2 thread_safe:0.3.5 tzinfo:1.2.2 activesupport:4.2.4 builder:3.2.2 activemodel:4.2.4 arel:6.0.3 activerecord:4.2.4  mime-types:2.6.2 mini_portile:0.6.2 nokogiri:1.6.6.2 rack:1.6.4 rack-test:0.6.3 xpath:2.0.0 capybara:2.5.0 cliver:0.3.2 diff-lcs:1.2.5 multi_json:1.11.2 gherkin3:3.1.2 multi_test:0.1.2 cucumber:2.1.0 kgio:2.10.0 mysql2:0.3.20 websocket-extensions:0.1.2 websocket-driver:0.6.3 poltergeist:1.7.0 rack-flash3:1.0.5 rack-protection:1.5.3 raindrops:0.15.0 rspec-support:3.3.0 rspec-core:3.3.2 rspec-expectations:3.3.1 rspec-mocks:3.3.2 rspec:3.3.0 tilt:2.0.1 sinatra-activerecord:2.0.9 unicorn:5.0.0"
+gem install $global_gems
+/opt/chef/embedded/bin/gem install --force $chef_gems
+su vagrant -c "gem install --user-install $user_gems"
+su jenkins -c "gem install --user-install $user_gems"
 
 umount /vagrant
 

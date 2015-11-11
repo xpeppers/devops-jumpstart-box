@@ -3,6 +3,7 @@
 
 Vagrant.configure(2) do |config|
   config.vm.box = "ubuntu/trusty32"
+  config.ssh.insert_key = false
 
   config.vm.provider "virtualbox" do |vb|
     vb.cpus = "2"
