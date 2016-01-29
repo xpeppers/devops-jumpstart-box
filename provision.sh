@@ -2,14 +2,17 @@
 
 set -e
 
+DEBIAN_FRONTEND=noninteractive apt-get remove -y -f --purge ufw juju puppet chef ruby bundler apport default-jre plymouth apparmor || :
+
 apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 58118E89F3A912897C070ADBF76221572C52609D
 echo "deb https://apt.dockerproject.org/repo ubuntu-trusty main" > /etc/apt/sources.list.d/docker.list
 apt-get update -y && apt-get upgrade -y
-apt-get install -y vim linux-image-extra-$(uname -r) docker-engine openbox lxterminal xinit x11-xserver-utils
+apt-get install -y docker-engine openbox lxterminal xinit x11-xserver-utils
 
 curl -o /tmp/vagrant.deb https://releases.hashicorp.com/vagrant/1.8.1/vagrant_1.8.1_x86_64.deb && dpkg -i /tmp/vagrant.deb && rm -rf /tmp/vagrant.deb
 vagrant plugin install vagrant-berkshelf
 usermod -a -G docker vagrant
+usermod -a -G vboxsf vagrant
 
 curl -o /tmp/chefdk.deb https://opscode-omnibus-packages.s3.amazonaws.com/ubuntu/14.04/x86_64/chefdk_0.10.0-1_amd64.deb && dpkg -i /tmp/chefdk.deb && rm -rf /tmp/chefdk.deb
 /opt/chefdk/embedded/bin/chef gem install kitchen-docker
@@ -20,12 +23,13 @@ cd /vagrant
 docker rmi -f $(docker images -q) || true
 docker build -t xpeppers/devops-jumpstart ./
 
-if [ ! -d "/vagrant/devops-jumpstart" ]; then
-  su vagrant -c "git clone https://github.com/xpeppers/devops-jumpstart.git"
-else
-  su vagrant -c "git pull"
-fi
+docker save xpeppers/devops-jumpstart > image.tar
+./docker-squash -i image.tar -o squashed.tar
+cat squashed.tar | docker load
+docker images xpeppers/devops-jumpstart
+rm *.tar
 
+cd /
 umount /vagrant
 
 apt-get autoremove -y && apt-get autoclean -y && apt-get clean -y

@@ -1,15 +1,13 @@
 FROM ubuntu:14.04
 
-RUN DEBIAN_FRONTEND=noninteractive apt-get remove -y -f --purge ufw juju puppet chef ruby bundler xserver-xorg-core xserver-common x11-common xfonts-base apport default-jre || :
-RUN apt-get update -y && apt-get upgrade -y && apt-get dist-upgrade -y
-RUN apt-get install -y curl openssh-server sudo
+RUN DEBIAN_FRONTEND=noninteractive apt-get remove -y -f --purge ufw puppet ruby default-jre || :
+RUN apt-get update -y && apt-get upgrade -y
+RUN apt-get install -y curl
 
 RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys C3173AA6 && echo 'deb http://ppa.launchpad.net/brightbox/ruby-ng/ubuntu trusty main' > /etc/apt/sources.list.d/brightbox-passenger.list
 RUN curl http://pkg.jenkins-ci.org/debian/jenkins-ci.org.key | apt-key add - && echo 'deb http://pkg.jenkins-ci.org/debian binary/' > /etc/apt/sources.list.d/jenkins.list
 RUN apt-get update -y
-
-RUN apt-get install -y --force-yes build-essential zlib1g-dev autoconf binutils-doc bison flex gettext ncurses-dev git nginx ruby2.2 ruby2.2-dev mysql-client-5.6 libmysqlclient-dev phantomjs openjdk-7-jre jenkins
-RUN apt-get update -y && apt-get upgrade -y && apt-get dist-upgrade -y
+RUN apt-get install -y --force-yes openssh-server sudo build-essential zlib1g-dev autoconf binutils-doc bison flex gettext ncurses-dev git nginx ruby2.2 ruby2.2-dev mysql-client-5.6 libmysqlclient-dev phantomjs openjdk-7-jre-headless jenkins
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y --force-yes mysql-server-5.6 || :
 
 RUN curl -L https://www.chef.io/chef/install.sh | bash
@@ -40,6 +38,8 @@ RUN GEM_HOME=$BUSSER_ROOT/gems GEM_PATH=$BUSSER_ROOT/gems GEM_CACHE=$BUSSER_ROOT
 RUN GEM_HOME=$BUSSER_ROOT/gems GEM_PATH=$BUSSER_ROOT/gems GEM_CACHE=$BUSSER_ROOT/gems/cache $BUSSER_ROOT/gems/bin/busser setup
 RUN GEM_HOME=$BUSSER_ROOT/gems GEM_PATH=$BUSSER_ROOT/gems GEM_CACHE=$BUSSER_ROOT/gems/cache $BUSSER_ROOT/gems/bin/busser plugin install busser-serverspec
 RUN chmod -R 777 $BUSSER_ROOT
+
+RUN apt-get autoremove -y && apt-get autoclean -y && apt-get clean -y && find /var/lib/apt -type f | xargs rm -f
 
 RUN mkdir /var/run/sshd
 CMD ["/usr/sbin/sshd", "-D", "-e"]
