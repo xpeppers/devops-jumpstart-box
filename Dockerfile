@@ -6,8 +6,12 @@ RUN apt-get install -y curl
 
 RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys C3173AA6 && echo 'deb http://ppa.launchpad.net/brightbox/ruby-ng/ubuntu trusty main' > /etc/apt/sources.list.d/brightbox-passenger.list
 RUN curl http://pkg.jenkins-ci.org/debian/jenkins-ci.org.key | apt-key add - && echo 'deb http://pkg.jenkins-ci.org/debian binary/' > /etc/apt/sources.list.d/jenkins.list
+RUN curl https://packages.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add - && echo 'deb http://packages.elastic.co/elasticsearch/2.x/debian stable main' > /etc/apt/sources.list.d/elasticsearch.list
+RUN echo 'deb http://packages.elasticsearch.org/logstash/2.2/debian stable main' > /etc/apt/sources.list.d/logstash.list
+RUN echo 'deb http://packages.elastic.co/kibana/4.4/debian stable main' > /etc/apt/sources.list.d/kibana.list
+RUN echo 'deb http://packages.elastic.co/beats/apt stable main' > /etc/apt/sources.list.d/beats.list
 RUN apt-get update -y
-RUN apt-get install -y --force-yes openssh-server sudo build-essential zlib1g-dev autoconf binutils-doc bison flex gettext ncurses-dev git nginx ruby2.2 ruby2.2-dev mysql-client-5.6 libmysqlclient-dev phantomjs openjdk-7-jre-headless jenkins
+RUN apt-get install -y --force-yes openssh-server sudo lsb-release build-essential zlib1g-dev autoconf binutils-doc bison flex gettext ncurses-dev git nginx ruby2.2 ruby2.2-dev mysql-client-5.6 libmysqlclient-dev phantomjs openjdk-7-jre-headless jenkins elasticsearch logstash kibana filebeat
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y --force-yes mysql-server-5.6 || :
 
 RUN curl -L https://www.chef.io/chef/install.sh | bash
