@@ -25,11 +25,11 @@ RUN useradd --create-home --shell /bin/bash vagrant
 RUN echo vagrant:vagrant | chpasswd
 
 ADD https://raw.githubusercontent.com/mitchellh/vagrant/master/keys/vagrant.pub /home/vagrant/.ssh/authorized_keys
+RUN curl -o /home/vagrant/.ssh/id_rsa http://download.xpeppers.com/devops-jumpstart.pem
 RUN chown -R vagrant:vagrant /home/vagrant/.ssh
 RUN chmod 0600 /home/vagrant/.ssh/authorized_keys
-RUN chmod 0700 /home/vagrant/.ssh
-RUN curl -o /home/vagrant/.ssh/id_rsa http://download.xpeppers.com/devops-jumpstart.pem
 RUN chmod 0600 /home/vagrant/.ssh/id_rsa
+RUN chmod 0700 /home/vagrant/.ssh
 RUN echo "vagrant ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/01_vagrant
 RUN chmod 0400 /etc/sudoers.d/01_vagrant
 
