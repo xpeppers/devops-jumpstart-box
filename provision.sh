@@ -7,7 +7,7 @@ DEBIAN_FRONTEND=noninteractive apt-get remove -y -f --purge ufw juju puppet chef
 apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 58118E89F3A912897C070ADBF76221572C52609D
 echo "deb https://apt.dockerproject.org/repo ubuntu-trusty main" > /etc/apt/sources.list.d/docker.list
 apt-get update -y && apt-get upgrade -y
-apt-get install -y linux-image-extra-$(uname -r) docker-engine openbox lxterminal xinit x11-xserver-utils
+apt-get install -y unzip linux-image-extra-$(uname -r) docker-engine openbox lxterminal xinit x11-xserver-utils
 
 curl -o /tmp/vagrant.deb https://releases.hashicorp.com/vagrant/1.8.1/vagrant_1.8.1_x86_64.deb && dpkg -i /tmp/vagrant.deb && rm -rf /tmp/vagrant.deb
 vagrant plugin install vagrant-berkshelf
@@ -16,6 +16,12 @@ usermod -a -G vboxsf vagrant
 
 curl -o /tmp/chefdk.deb https://opscode-omnibus-packages.s3.amazonaws.com/ubuntu/14.04/x86_64/chefdk_0.10.0-1_amd64.deb && dpkg -i /tmp/chefdk.deb && rm -rf /tmp/chefdk.deb
 /opt/chefdk/embedded/bin/chef gem install kitchen-docker
+
+curl -o /tmp/packer.zip https://releases.hashicorp.com/packer/0.8.6/packer_0.8.6_linux_amd64.zip && unzip /tmp/packer.zip -d /usr/local/bin && rm -f /tmp/packer.zip
+curl -o /tmp/terraform.zip https://releases.hashicorp.com/terraform/0.6.11/terraform_0.6.11_linux_amd64.zip&& unzip /tmp/terraform.zip -d /usr/local/bin && rm -f /tmp/terraform.zip
+
+curl -o /tmp/awscli.zip https://s3.amazonaws.com/aws-cli/awscli-bundle.zip  && unzip /tmp/awscli.zip -d /tmp
+/tmp/awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws && rm -rf /tmp/awscli.zip && rm -rf /tmp/awscli-bundle
 
 echo "xrandr --auto --primary --mode 1024x768" > /home/vagrant/.xprofile
 
@@ -28,6 +34,8 @@ docker save xpeppers/devops-jumpstart > image.tar
 cat squashed.tar | docker load
 docker images xpeppers/devops-jumpstart
 rm *.tar
+
+ntpdate europe.pool.ntp.org
 
 cd /
 umount /vagrant
