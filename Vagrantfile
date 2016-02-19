@@ -13,17 +13,10 @@ Vagrant.configure(2) do |config|
   config.vm.network :forwarded_port, guest: 3000, host: 3000
 
   config.vm.provider "virtualbox" do |vb|
+    vb.name = "devops-jumpstart"
     vb.cpus = "2"
     vb.memory = "4096"
   end
 
   config.vm.provision "shell", path: "provision.sh"
-
-  config.push.define "local", strategy: "local-exec" do |push|
-    push.inline = "vagrant package --output devops-jumpstart.box"
-  end
-
-  config.push.define "remote", strategy: "atlas" do |push|
-    push.app = "xpeppers/devops-jumpstart"
-  end
 end
