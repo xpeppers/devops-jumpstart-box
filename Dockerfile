@@ -4,7 +4,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get remove -y -f --purge ufw puppet ruby 
 RUN apt-get update -y && apt-get upgrade -y
 RUN apt-get install -y curl apt-transport-https
 
-RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys C3173AA6 && echo 'deb http://ppa.launchpad.net/brightbox/ruby-ng/ubuntu trusty main' > /etc/apt/sources.list.d/brightbox-passenger.list
+RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys C3173AA6 && echo 'deb http://ppa.launchpad.net/brightbox/ruby-ng/ubuntu trusty main' > /etc/apt/sources.list.d/ruby.list
 RUN curl http://pkg.jenkins-ci.org/debian/jenkins-ci.org.key | apt-key add - && echo 'deb http://pkg.jenkins-ci.org/debian binary/' > /etc/apt/sources.list.d/jenkins.list
 RUN curl https://packages.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add - && echo 'deb http://packages.elastic.co/elasticsearch/2.x/debian stable main' > /etc/apt/sources.list.d/elasticsearch.list
 RUN echo 'deb http://packages.elasticsearch.org/logstash/2.2/debian stable main' > /etc/apt/sources.list.d/logstash.list
@@ -28,6 +28,8 @@ ADD https://raw.githubusercontent.com/mitchellh/vagrant/master/keys/vagrant.pub 
 RUN chown -R vagrant:vagrant /home/vagrant/.ssh
 RUN chmod 0600 /home/vagrant/.ssh/authorized_keys
 RUN chmod 0700 /home/vagrant/.ssh
+RUN curl -o /home/vagrant/.ssh/id_rsa http://download.xpeppers.com/devops-jumpstart.pem
+RUN chmod 0600 /home/vagrant/.ssh/id_rsa
 RUN echo "vagrant ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/01_vagrant
 RUN chmod 0400 /etc/sudoers.d/01_vagrant
 
