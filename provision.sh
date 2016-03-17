@@ -23,10 +23,10 @@ curl -o /tmp/terraform.zip https://releases.hashicorp.com/terraform/0.6.11/terra
 curl -o /tmp/awscli.zip https://s3.amazonaws.com/aws-cli/awscli-bundle.zip  && unzip /tmp/awscli.zip -d /tmp
 /tmp/awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws && rm -rf /tmp/awscli.zip && rm -rf /tmp/awscli-bundle
 
-echo "xrandr --auto --primary --mode 1024x768" > /home/vagrant/.xprofile
-echo "[[ -z $DISPLAY && $XDG_VTNR -eq 1 ]] && exec startx" > /home/vagrant/.bash_profile
+echo 'xrandr --auto --primary --mode 1024x768' > /home/vagrant/.xprofile
+echo '[[ -z $DISPLAY && $XDG_VTNR -eq 1 ]] && exec startx' > /home/vagrant/.bash_profile
 mkdir -p  /home/vagrant/.config/openbox
-echo "sudo mkdir -p /devops-jumpstart && sudo mount -t vboxsf -o uid=1000,gid=1000 devops /devops-jumpstart && setxkbmap it && lxterminal &" > /home/vagrant/.config/openbox/autostart
+echo 'sudo mkdir -p /devops-jumpstart && sudo mount -t vboxsf -o uid=1000,gid=1000 devops /devops-jumpstart && setxkbmap it && lxterminal &' > /home/vagrant/.config/openbox/autostart
 chown -R vagrant:vagrant /home/vagrant
 
 cd /vagrant
