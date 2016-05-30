@@ -33,6 +33,7 @@ git config --global user.email "developer@xpeppers.com"
 git config --global user.name "Developer"
 
 cd /vagrant
+docker rm -f $(docker ps -aq) || true
 docker rmi -f $(docker images -q) || true
 docker build -t xpeppers/devops-jumpstart ./
 
