@@ -26,7 +26,7 @@ curl -L -o /tmp/awscli.zip https://s3.amazonaws.com/aws-cli/awscli-bundle.zip  &
 echo 'xrandr --auto --primary --mode 1024x768' > /home/vagrant/.xprofile
 echo '[[ -z $DISPLAY && $XDG_VTNR -eq 1 ]] && exec startx' > /home/vagrant/.bash_profile
 mkdir -p  /home/vagrant/.config/openbox
-echo 'sudo mkdir -p /devops-jumpstart && sudo mount -t vboxsf -o uid=1000,gid=1000 devops /devops-jumpstart && setxkbmap it && lxterminal &' > /home/vagrant/.config/openbox/autostart
+echo 'VBoxClient --clipboard; sudo mkdir -p /devops-jumpstart && sudo mount -t vboxsf -o uid=1000,gid=1000 devops-jumpstart /devops-jumpstart; setxkbmap it; lxterminal &' > /home/vagrant/.config/openbox/autostart
 chown -R vagrant:vagrant /home/vagrant
 
 git config --global user.email "developer@xpeppers.com"
