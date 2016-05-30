@@ -6,4 +6,5 @@ vagrant destroy --force
 vagrant up
 vagrant halt
 VBoxManage sharedfolder remove devops-jumpstart --name vagrant
+VBoxManage modifyvm devops-jumpstart --clipboard bidirectional
 VBoxManage export devops-jumpstart -o devops-jumpstart.ova
